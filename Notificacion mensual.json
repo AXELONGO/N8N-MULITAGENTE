@@ -1,0 +1,714 @@
+{
+  "name": "CENYCA Escenario Mensual",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "8ab6b5b6-cc1e-4675-a0c6-dc78294a6bef",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "765c8364-69d3-45d5-b9f3-add8c15a885d",
+              "leftValue": "={{ $json[\"Day of month\"] }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "dca61b7f-e257-436b-87dd-c8c2f3a471e1",
+              "leftValue": "={{ $json[\"Day of month\"] }}",
+              "rightValue": "3",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "b100ec2f-ac61-4ee1-9408-5d13f3631247",
+              "leftValue": "={{ $json[\"Day of month\"] }}",
+              "rightValue": "5",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "d79a20aa-f94e-4112-b3e7-d3e1a64f02c6",
+              "leftValue": "={{ $json[\"Day of month\"] }}",
+              "rightValue": "7",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "4aa39841-f6e0-48f9-a842-046c90d6fbec",
+              "leftValue": "={{ $json[\"Day of month\"] }}",
+              "rightValue": "9",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "cf70611f-3e0c-44da-a1ea-30b6bb927c54",
+              "leftValue": "={{ $json[\"Day of month\"] }}",
+              "rightValue": "10",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "e622bcc5-0d72-49e5-9db2-00bc14379b57",
+              "leftValue": "={{ $json[\"Day of month\"] }}",
+              "rightValue": "11",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "452ef93d-420e-4551-8138-188ab10d9584",
+              "leftValue": "={{ $json[\"Day of month\"] }}",
+              "rightValue": "15",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "3ebb7bf8-4f6f-487d-9ac6-bd0ba33266f3",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        180,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11nUajSIwe8D9py9UbkRlXstdGdQOiNpQsAS5B0OW9wA",
+          "mode": "list",
+          "cachedResultName": "Prueba fiananzas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11nUajSIwe8D9py9UbkRlXstdGdQOiNpQsAS5B0OW9wA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11nUajSIwe8D9py9UbkRlXstdGdQOiNpQsAS5B0OW9wA/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Pago",
+              "lookupValue": "no"
+            }
+          ]
+        },
+        "options": {
+          "outputFormatting": {
+            "values": {
+              "general": "UNFORMATTED_VALUE",
+              "date": "FORMATTED_STRING"
+            }
+          }
+        }
+      },
+      "id": "99c91e81-aa54-46b8-a54f-70490250c323",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        740,
+        -460
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Sg7orme8byQHTq3j",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11nUajSIwe8D9py9UbkRlXstdGdQOiNpQsAS5B0OW9wA",
+          "mode": "list",
+          "cachedResultName": "Prueba fiananzas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11nUajSIwe8D9py9UbkRlXstdGdQOiNpQsAS5B0OW9wA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11nUajSIwe8D9py9UbkRlXstdGdQOiNpQsAS5B0OW9wA/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Pago",
+              "lookupValue": "no"
+            }
+          ]
+        },
+        "options": {
+          "outputFormatting": {
+            "values": {
+              "general": "UNFORMATTED_VALUE",
+              "date": "FORMATTED_STRING"
+            }
+          }
+        }
+      },
+      "id": "0f4cdbbf-3b31-4580-a624-458ef22b4d7e",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        760,
+        -280
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Sg7orme8byQHTq3j",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11nUajSIwe8D9py9UbkRlXstdGdQOiNpQsAS5B0OW9wA",
+          "mode": "list",
+          "cachedResultName": "Prueba fiananzas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11nUajSIwe8D9py9UbkRlXstdGdQOiNpQsAS5B0OW9wA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11nUajSIwe8D9py9UbkRlXstdGdQOiNpQsAS5B0OW9wA/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Pago",
+              "lookupValue": "no"
+            }
+          ]
+        },
+        "options": {
+          "outputFormatting": {
+            "values": {
+              "general": "UNFORMATTED_VALUE",
+              "date": "FORMATTED_STRING"
+            }
+          }
+        }
+      },
+      "id": "898d5755-928a-4106-aaf3-7fac250990b6",
+      "name": "Google Sheets2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        760,
+        -60
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Sg7orme8byQHTq3j",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "n.info@novaisolutions.com",
+        "toEmail": "={{ $('Google Sheets2').item.json.Correo }}",
+        "subject": "Inicio de proceso de baja ",
+        "html": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "id": "18726636-4ded-420e-b3a5-1ae7321aef4e",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1740,
+        480
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "IJHOutPmW56oTXZS",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "bd9406c2-f8da-4c94-a0f6-a42f881ebd36",
+      "name": "Twilio",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "n.info@novaisolutions.com",
+        "toEmail": "={{ $('Google Sheets2').item.json.Correo }}",
+        "subject": "Inicio de proceso de baja ",
+        "html": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "id": "ce94b207-0cdd-49f1-8095-916242c189c3",
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2000,
+        -20
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "IJHOutPmW56oTXZS",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "89b57b68-724c-459f-b8ad-c33c9e10e55b",
+      "name": "Twilio1",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "n.info@novaisolutions.com",
+        "toEmail": "={{ $('Google Sheets2').item.json.Correo }}",
+        "subject": "Inicio de proceso de baja ",
+        "html": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "id": "f70fcd30-60f8-4bb2-833d-c1a21de998e6",
+      "name": "Send Email2",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1720,
+        -400
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "IJHOutPmW56oTXZS",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "bd27f5cc-2c0b-4523-baec-0779efe9dcc8",
+      "name": "Twilio2",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        -600
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json[\"Day of month\"] }}",
+                    "rightValue": "1,3,5,9,10",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Recordatorio de pago"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "11944110-cd72-481a-8685-64b0782b1c71",
+                    "leftValue": "= {{ $json[\"Day of month\"] }}",
+                    "rightValue": "11",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reporte adeudos"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9818bb50-08ca-4b31-9def-feef77358811",
+                    "leftValue": "={{ $json[\"Day of month\"] }}",
+                    "rightValue": "15",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "In_Baja"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "id": "7ddd0fbf-a71d-4b8a-bb86-1649e6e68848",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        400,
+        -280
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Hola,  {{ $json['Nombre '] }}, te recordamos que "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "16574d99-e1fe-462c-b7f8-87b116c72fbe",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.5,
+      "position": [
+        1080,
+        -200
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "mwT7Q6QVEF9I63Xf",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Hola,  {{ $json['Nombre '] }}, te recordamos que "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c8da672c-4dbc-4578-af38-4598b5f23a30",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.5,
+      "position": [
+        1120,
+        -520
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "mwT7Q6QVEF9I63Xf",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=DEBES ESCRIBIR UN MENSAJE DONDE SE INDIQUE AL ALUMNO  {{ $json['Nombre '] }}, QUE HA COMENZADO EL PRIOCESO DE BAJA.\n\nAlgo como: \n\n<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            background-color: #f4f4f9;\n            color: #333;\n            padding: 20px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n            padding: 20px;\n            border-radius: 8px;\n            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\n        }\n        h1 {\n            color: #d9534f;\n            font-size: 24px;\n        }\n        p {\n            font-size: 16px;\n            line-height: 1.6;\n        }\n        .highlight {\n            color: #d9534f;\n            font-weight: bold;\n        }\n        .cta {\n            margin-top: 20px;\n            text-align: center;\n        }\n        .cta a {\n            background-color: #5bc0de;\n            color: #fff;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            font-size: 16px;\n        }\n        .cta a:hover {\n            background-color: #31b0d5;\n        }\n    </style>\n    <title>Notificación de Baja Temporal</title>\n</head>\n<body>\n    <div class=\"container\">\n        <h1>Notificación de Baja Temporal</h1>\n        <p>Estimado <span class=\"highlight\">{{ $json['Nombre '] }}</span>,</p>\n        <p>Lamentamos informarte que se ha iniciado el proceso de <strong>baja temporal</strong> debido a la falta de pago. Te recordamos que tienes hasta el final del mes para:</p>\n        <ul>\n            <li>Realizar el pago pendiente</li>\n            <li>Solicitar una prórroga</li>\n            <li>O comunicarte con el departamento de Finanzas</li>\n        </ul>\n        <p>Puedes contactarnos a través del correo electrónico: <a href=\"mailto:finanzascenyca@gmail.com\">finanzascenyca@gmail.com</a></p>\n        <div class=\"cta\">\n            <a href=\"mailto:finanzascenyca@gmail.com\">Contactar Finanzas</a>\n        </div>\n    </div>\n</body>\n</html>\n",
+              "role": "system"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "df5ad0d7-ada5-4aa2-99f5-1da98f605941",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.5,
+      "position": [
+        1080,
+        220
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "mwT7Q6QVEF9I63Xf",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Twilio1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Send Email2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Twilio2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Twilio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a6306871-07f0-4481-ae03-063db0934bd1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "05f8c96c51baba82e3fd858847e7adeb72fafcc6608acf4cc21f549fc8fbad22"
+  },
+  "id": "HD8f6gjVHGxwNxl9",
+  "tags": []
+}
