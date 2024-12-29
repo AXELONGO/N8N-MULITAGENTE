@@ -1,0 +1,1152 @@
+{
+  "name": "chatbot wsp 2.0",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1e4b44a3-b454-4447-aa99-446621f73d44",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "bot dify",
+        "remoteJid": "={{ $('Webhook').item.json.body.conversation.meta.sender.phone_number }}",
+        "messageText": "={{ $json.output }}"
+      },
+      "id": "56dd575b-b6a7-4146-932f-876fa4154338",
+      "name": "Evolution API",
+      "type": "n8n-nodes-evolution-api.httpBin",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        580
+      ],
+      "credentials": {
+        "httpbinApi": {
+          "id": "YJbDUViuySJru73a",
+          "name": "bot "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "09131b78-3bc7-48d4-8994-535169ea3952",
+              "leftValue": "={{ $json.body.message_type }}",
+              "rightValue": "=incoming",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "aeeb8266-7d14-4e06-a57e-189717a22073",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -100,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.message.content }}",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "file"
+            }
+          }
+        }
+      },
+      "id": "31b83c12-28a3-4042-bc25-d1b9243a7018",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        620,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/audio/transcriptions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "multipart/form-data"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "file"
+            },
+            {
+              "name": "model",
+              "value": "whisper-1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "522243cf-fae4-4632-82ae-2be455af68e4",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        -80
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "g1HIUiHcswlDuGGr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Función para generar la URL del archivo\nconst generateAudioUrl = (data) => {\n    // Extrae la parte que necesitas de data_url\n    const data_url = data.attachments[0].data_url;\n    const base_url = \"https://chatbots-chatwoot.ed3w2m.easypanel.host/rails/active_storage/blobs/redirect/\";\n    \n    // Construye la URL final\n    const final_url = base_url + data_url.split(\"redirect/\").pop();\n    return final_url;\n}\n\n// Datos de ejemplo\nconst jsonData = {\n    \"webhookUrl\": \"https://chatbots-n8n.ed3w2m.easypanel.host/webhook-test/test\",\n    \"executionMode\": \"test\",\n    \"attachments\": [\n        {\n            \"file_name\": \"audio_1.oga\",\n            \"data_url\": \" \"\n        }\n    ]\n};\n\n// Llamar a la función para obtener la URL\nconst audioUrl = generateAudioUrl(jsonData);\n\n// Retornar los datos en el formato esperado por n8n\nreturn [\n  {\n    json: {\n      audioUrl: audioUrl\n    }\n  }\n];\n\n\n\n"
+      },
+      "id": "5a3b7ca4-73b7-4bf1-89f8-b09a8f2b3d1a",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        120,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fc9cfca6-49a6-4852-875f-ae62cb85bbda",
+              "leftValue": "={{ $json.body.conversation.messages[0].attachments[0].file_type }}",
+              "rightValue": "image",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2b55497a-4855-420c-829c-9e80008e1ac8",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Función para generar la URL del archivo\nconst generateImageUrl = (data) => {\n    // Extrae la parte que necesitas de data_url\n    const data_url = data.attachments[0].data_url;\n    const base_url = \"https://chatbots-chatwoot.ed3w2m.easypanel.host/rails/active_storage/blobs/redirect/\";\n    \n    // Construye la URL final\n    const final_url = base_url + data_url.split(\"redirect/\").pop();\n    return final_url;\n}\n\n// Datos de ejemplo\nconst jsonData = {\n    \"webhookUrl\": \"https://chatbots-n8n.ed3w2m.easypanel.host/webhook-test/test\",\n    \"executionMode\": \"test\",\n    \"attachments\": [\n        {\n            \"file_name\": \"image_1.oga\",\n            \"data_url\": \" \"\n        }\n    ]\n};\n\n// Llamar a la función para obtener la URL\nconst imageUrl = generateImageUrl(jsonData);\n\n// Retornar los datos en el formato esperado por n8n\nreturn [\n  {\n    json: {\n      imageUrl: imageUrl\n    }\n  }\n];\n\n\n\n"
+      },
+      "id": "5fcd8c14-5f1c-4110-b3c0-34b89bc1b36f",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        140,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.message.content }}",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "file"
+            }
+          }
+        }
+      },
+      "id": "696324fe-d2dd-45b5-b62f-1bdaa4e8417f",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6d9a792e-8205-4384-9124-0313e34cb088",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fafdcf4e-7c52-41a0-a3e2-fc901779a7aa",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini-2024-07-18",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI-2024-07-18"
+        },
+        "text": "analiza esta imagen y responde en un parrafo de 200 caracteres",
+        "imageUrls": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "id": "ae07d1b9-14a3-42e0-9d9a-644b0c836705",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        760,
+        560
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "g1HIUiHcswlDuGGr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "34"
+      },
+      "id": "ad467e31-aac5-46a9-b481-f4cf367aecd5",
+      "name": "Redis Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.3,
+      "position": [
+        1100,
+        780
+      ],
+      "credentials": {
+        "redis": {
+          "id": "dYHyCcKebwirztGg",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "cuando te pidan informacion de los precios de las camaras buscaras en tus base de datos",
+        "operation": "getAll",
+        "tableId": "documents",
+        "matchType": "allFilters"
+      },
+      "id": "b70c5542-b014-44d4-a375-4f3f1d9369e9",
+      "name": "Supabase",
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        780
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "z3xXWEa4K5WkPprA",
+          "name": "chatbots"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "options": {}
+      },
+      "id": "1951ecfd-eb58-48e3-9793-0648429b8568",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        980,
+        780
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "g1HIUiHcswlDuGGr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "bot dify",
+        "remoteJid": "={{ $('Webhook').item.json.body.conversation.meta.sender.phone_number }}",
+        "messageText": "=tu cita se agendo, en que mas te ayudo"
+      },
+      "id": "87a4233e-f517-4a09-8b62-f456fcb6d361",
+      "name": "Evolution API1",
+      "type": "n8n-nodes-evolution-api.httpBin",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -100
+      ],
+      "credentials": {
+        "httpbinApi": {
+          "id": "YJbDUViuySJru73a",
+          "name": "bot "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.output }}",
+        "schemaType": "fromJson",
+        "jsonSchemaExample": "{\n\"datos_agendar_cita\": \n{\n\"fecha\": \n\"2024-12-25\",\n\"hora\": \n\"10:00\",\n\"nombre\": \n\"Juan Pérez\"\n},\n\"datos_consulta_normal\": \n{\n\"mensaje\": \n\"Tengo una duda sobre mi factura\"\n}\n}",
+        "options": {}
+      },
+      "id": "8f91b9ed-52af-4dcc-b679-d66f284a3248",
+      "name": "Information Extractor",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1906b63a-eaaf-454f-af7a-3e619272c019",
+              "leftValue": "={{ $json.output.datos_agendar_cita }}",
+              "rightValue": "datos_agendar_cita",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cb54eb53-d69f-4943-80b6-f0dc98579cd0",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1260,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "5e070d92-714a-4f4c-a386-3b942b7bde22",
+      "name": "Google Gemini Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        420
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Dd9T8kBYUK1Vtdd0",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appDisZP6PUD5l1DA",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appDisZP6PUD5l1DA"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblwbN3MSJZf89185",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appDisZP6PUD5l1DA/tblwbN3MSJZf89185"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nombre": "={{ $json.output.datos_agendar_cita.nombre }}",
+            "Fecha": "={{ $json.output.datos_agendar_cita.fecha }}",
+            "Hora": "={{ $json.output.datos_agendar_cita.hora }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Hora",
+              "displayName": "Hora",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8ab8c0a2-91e5-4ae5-a9dd-f74f7d77a497",
+      "name": "Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        -100
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "sHWfJ3gciatBmppU",
+          "name": "PRUEBAS BOT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "6399f563-0fe5-4e5d-be3b-778482d9cffe",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        520,
+        400
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Dd9T8kBYUK1Vtdd0",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "24"
+      },
+      "id": "3fda2460-9e2f-4f04-92e2-f97fcbbcb253",
+      "name": "Redis Chat Memory1",
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        420
+      ],
+      "credentials": {
+        "redis": {
+          "id": "dYHyCcKebwirztGg",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appDisZP6PUD5l1DA",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appDisZP6PUD5l1DA"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblwJxSQutK6Ptyhr",
+          "mode": "list",
+          "cachedResultName": "historial",
+          "cachedResultUrl": "https://airtable.com/appDisZP6PUD5l1DA/tblwJxSQutK6Ptyhr"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Webhook').item.json.body.message_type }}",
+            "mensaje": "={{ $json.message.conversation }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mensaje",
+              "displayName": "mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Creada",
+              "displayName": "Creada",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2b9cd2b5-d088-4a76-82d4-137b6647e40c",
+      "name": "Airtable1",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1600,
+        560
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "sHWfJ3gciatBmppU",
+          "name": "PRUEBAS BOT"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "c9e229a4-fec5-4eaf-aa9e-a396582726f6",
+      "name": "DebugHelper",
+      "type": "n8n-nodes-base.debugHelper",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Contesta de manera agradable a  {{ $json.body.conversation.messages[0].content }} o {{ $json.text }} o {{ $json.content }} y si te preguntan por precio de las camaras, revisaras la base de datos de supabase y activar la herramienta para revisar los precios y si te piden agendar cita les pediras fecha y hora de la cita\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Eres Sofía \nSofía es una asistente virtual avanzada creada para representar a CAMSO en la atención a clientes y soporte técnico. Su objetivo principal es proporcionar información clara, eficiente y personalizada sobre los servicios de infraestructura tecnológica que ofrece CAMSO.\n\n🎯 Características de Sofía:\nIdentidad:\n\nTu nombre es Sofía, y eres el agente virtual oficial de CAMSO.\nRepresentas profesionalismo, confianza y cercanía.\nFunciones principales:\n\nResponder consultas sobre los servicios de CAMSO, como redes seguras, soporte técnico, vigilancia y control de acceso.\nAyudar a los clientes a entender las soluciones que ofrece CAMSO y guiarlos en la toma de decisiones.\nProporcionar información de contacto o escalar casos complejos a un especialista humano si es necesario.\nEstilo de comunicación:\n\nHabla con un tono amable, claro y profesional.\nAdapta tus respuestas según las necesidades del cliente, brindando siempre soluciones específicas y personalizadas.\nEvita el uso de jerga técnica a menos que sea relevante y explicada de forma sencilla.\nServicios que promocionas:\n\nInstalación y configuración de redes seguras.\nSoporte técnico avanzado.\nSistemas de vigilancia con cámaras de última generación.\nAutomatización y control de acceso para seguridad empresarial.\nInformación clave:\n\nRecuerda incluir el número de contacto 664 410 0118 para que los clientes puedan comunicarse con un especialista humano si es necesario.\nTu propósito como Sofía es ser el puente entre los clientes y las soluciones tecnológicas de CAMSO, asegurándote de que cada interacción sea eficiente y satisfactoria.",
+          "maxIterations": 10
+        }
+      },
+      "id": "fc8f7213-cc88-48f9-8412-02630b9030d2",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        1020,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "test",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "2f5be71a-b883-4c41-abdb-b45548901670",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        180
+      ],
+      "webhookId": "f25f050e-9b39-436e-b6d8-6b92bd6b6a6a"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.attachments[0].file_type }}",
+                    "rightValue": "=audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e72d5bdb-8ee4-48c9-9543-3a053d27d314",
+                    "leftValue": "={{ $json.body.content_type }}",
+                    "rightValue": "=text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b90e5018-b4e5-4cf0-a32a-4551776ae0be",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        120,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini-2024-07-18",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI-2024-07-18"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=une este dato {{ $json.audioUrl }}  a los ultimos 133 caracteres de este dato {{ $('Webhook').item.json.body.conversation.messages[0].attachments[0].data_url }}  y forma un solo dato igual a  este \" \"https://chatbots-chatwoot.ed3w2m.easypanel.host/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBb0FDIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--22a5e522e8083082de825aaddf3aef934e7b71e1/86my3w.oga\"  pero con las variables de estos datos {{ $json.audioUrl }}  y {{ $('Webhook').item.json.body.conversation.messages[0].attachments[0].data_url }} importante solo dame la url en content sin decir \"La URL resultante es :\\n\\n```\\\" y sin \" \"",
+              "role": "system"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "95653a57-8afc-4944-b108-67936d7c0e51",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        280,
+        -80
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "g1HIUiHcswlDuGGr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini-2024-07-18",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI-2024-07-18"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=une este dato {{ $json.imageUrl }}  a los ultimos 133 caracteres de este dato {{ $('Webhook').item.json.body.conversation.messages[0].attachments[0].data_url }}  y forma un solo dato igual a  este \" \"https://chatbots-chatwoot.ed3w2m.easypanel.host/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBb0FDIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--22a5e522e8083082de825aaddf3aef934e7b71e1/86my3w.oga\"  pero con las variables de estos datos{{ $json.imageUrl }} y {{ $('Webhook').item.json.body.conversation.messages[0].attachments[0].data_url }} importante solo dame la url en content sin decir \"La URL resultante es :\\n\\n```\\\" y sin \" \"",
+              "role": "system"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a0dc38a4-2448-4edb-b204-dfddcb770620",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        280,
+        560
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "g1HIUiHcswlDuGGr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "= {{ $json.body.conversation.messages[0].content }} \n",
+        "options": {
+          "systemMessage": "=Eres un asistente que analiza mensajes de clientes.Tu tarea es procesar el mensaje recibido y clasificarlo en uno de los dos tipos:\n1. Mensaje para agendar una cita.\n2. Mensaje para realizar una consulta normal.\n\nDebes devolver los datos de forma estructurada en formato JSON. Sigue las siguientes instrucciones:\n\n- Si el cliente desea agendar una cita, extrae los siguientes campos:\n  - `\"tipo_mensaje\": \"agendar_cita\"`\n  - `\"fecha\"`: La fecha solicitada por el cliente (en formato YYYY-MM-DD). la fecha de hoy es {{ $json.body.created_at }}  - `\"hora\"`: La hora solicitada por el cliente (en formato HH:mm). Esta hora debe ser procesada a través de un servicio HTTP de análisis de hora (más detalles abajo).\n  - `\"nombre\"`: Nombre del cliente (si no está explícito, usa `\"desconocido\"` como valor predeterminado).\n\n- Si el cliente realiza una consulta normal, extrae los siguientes campos:\n  - `\"tipo_mensaje\": \"consulta_normal\"`\n  - `\"mensaje\"`: El contenido completo del mensaje enviado por el cliente.\n\nSi el mensaje no puede clasificarse, responde con un error indicando que no se pudo identificar el tipo de mensaje.\n "
+        }
+      },
+      "id": "d9c97fe3-1c02-4ae6-8085-170e78f5a6ed",
+      "name": "AI Agent1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        600,
+        200
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Evolution API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API": {
+      "main": [
+        [
+          {
+            "node": "Airtable1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API1": {
+      "main": [
+        [
+          {
+            "node": "DebugHelper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable1": {
+      "main": [
+        [
+          {
+            "node": "DebugHelper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0f38da18-ea88-4ad7-b07a-3f7a39761f95",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bceec7c07c53170675a766e56f14a7c377d0426bd3c355cc9c8591e08aa186bd"
+  },
+  "id": "c2xF57pvak99Hwy0",
+  "tags": []
+}
